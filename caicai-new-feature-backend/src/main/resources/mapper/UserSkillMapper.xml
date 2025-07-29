@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.caicai.mapper.UserSkillMapper">
+
+    <resultMap id="BaseResultMap" type="com.caicai.entity.pojo.UserSkill">
+            <id property="id" column="id" />
+            <result property="createdAt" column="created_at" />
+            <result property="updatedAt" column="updated_at" />
+            <result property="deletedAt" column="deleted_at" />
+            <result property="skillName" column="skill_name" />
+            <result property="skillTime" column="skill_time" />
+            <result property="skillProficiency" column="skill_proficiency" />
+            <result property="skillCertId" column="skill_cert_id" />
+            <result property="userId" column="user_id" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,created_at,updated_at,deleted_at,skill_name,skill_time,
+        skill_proficiency,skill_cert_id,user_id
+    </sql>
+
+    <!-- AI评分用技能标签基本信息 -->
+    <resultMap id="SkillTagModel" type="com.caicai.entity.model.resume.UserSkillModel">
+        <id property="id" column="id" />
+        <result property="skillName" column="skill_name" />
+        <result property="skillTime" column="skill_time" />
+        <result property="skillProficiency" column="skill_proficiency" />
+    </resultMap>
+
+    <!-- 根据简历id获取所有技能标签基本信息 -->
+    <select id="selectSkillTagModelByUserId" resultMap="SkillTagModel">
+        SELECT`id`, `skill_name`, `skill_time`, `skill_proficiency`
+        FROM `user_skill`
+        WHERE `user_id` = #{userId}
+    </select>
+</mapper>

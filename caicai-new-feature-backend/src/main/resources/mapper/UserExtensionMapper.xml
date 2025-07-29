@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.caicai.mapper.UserExtensionMapper">
+
+    <!-- 基础映射结果集 -->
+    <resultMap id="BaseResultMap" type="com.caicai.entity.pojo.UserExtension">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="id_card_num" property="idCardNum"/>
+        <result column="id_card_pic" property="idCardPic"/>
+        <result column="point" property="point"/>
+        <result column="wx_open_id" property="wxOpenId"/>
+        <result column="credit_score" property="creditScore"/>
+        <result column="is_vip_user" property="isVipUser"/>
+        <result column="check_status" property="checkStatus"/>
+        <result column="name" property="name"/>
+    </resultMap>
+    
+    <!-- 基础列名列表 -->
+    <sql id="Base_Column_List">
+        id, user_id, id_card_num, id_card_pic, point, wx_open_id, credit_score, is_vip_user, check_status, name
+    </sql>
+    
+    <!-- 根据用户ID查询用户扩展信息 -->
+    <select id="selectByUserId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM user_extension
+        WHERE user_id = #{userId}
+        LIMIT 1
+    </select>
+</mapper> 

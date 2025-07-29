@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.caicai.mapper.UserEducationExperienceMapper">
+
+    <!-- 基础映射结果集 -->
+    <resultMap id="BaseResultMap" type="com.caicai.entity.pojo.UserEducationExperience">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="school_name" property="schoolName"/>
+        <result column="major" property="major"/>
+        <result column="degree" property="degree"/>
+        <result column="is_full_time" property="isFullTime"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="school_experience" property="schoolExperience"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <result column="deleted_at" property="deletedAt"/>
+    </resultMap>
+    
+    <!-- 基础列名列表 -->
+    <sql id="Base_Column_List">
+        id, user_id, school_name, major, degree, is_full_time, start_time, end_time, 
+        school_experience, created_at, updated_at, deleted_at
+    </sql>
+
+    <!-- 教育信息VO映射结果集 -->
+    <resultMap id="EducationInfoVOMap" type="com.caicai.entity.vo.EducationInfoVO">
+        <result column="id" property="id"/>
+        <result column="school_name" property="schoolName"/>
+        <result column="certificate_pic" property="certificatePic"/>
+        <result column="check_status" property="checkStatus"/>
+    </resultMap>
+
+    <!-- 根据用户ID查询教育经历 -->
+    <select id="selectByUserId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM user_education_experience
+        WHERE user_id = #{userId}
+        LIMIT 1
+    </select>
+
+    <!-- 根据用户ID查询教育信息（学校名称和证书图片） -->
+    <select id="selectEducationInfoByUserId" parameterType="java.lang.Long" resultMap="EducationInfoVOMap">
+        SELECT uee.id, ue.school_name, uee.certificate_pic, uee.check_status
+        FROM user_education_experience ue
+        LEFT JOIN user_education_experience_extension uee ON ue.id = uee.user_education_experience_id
+        WHERE ue.user_id = #{userId}
+        LIMIT 1
+    </select>
+    
+    <!-- 管理员分页查询教育信息 -->
+    <select id="selectEducationInfoForAdmin" resultMap="EducationInfoVOMap">
+        SELECT uee.id, ue.school_name, uee.certificate_pic, uee.check_status
+        FROM user_education_experience ue
+        INNER JOIN user_education_experience_extension uee ON ue.id = uee.user_education_experience_id
+        WHERE uee.certificate_pic IS NOT NULL
+        ORDER BY uee.id DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+    
+    <!-- 统计教育信息总数 -->
+    <select id="countEducationInfoForAdmin" resultType="long">
+        SELECT COUNT(1)
+        FROM user_education_experience ue
+        INNER JOIN user_education_experience_extension uee ON ue.id = uee.user_education_experience_id
+        WHERE uee.certificate_pic IS NOT NULL
+    </select>
+
+    <!-- AI评分用教育经历基本信息 -->
+    <resultMap id="UserEducationExperienceModel" type="com.caicai.entity.model.resume.UserEducationExperienceModel">
+        <id column="id" property="id"/>
+        <result column="school_name" property="schoolName"/>
+        <result column="major" property="major"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="school_experience" property="schoolExperience"/>
+        <result column="degree" property="degree"/>
+        <result column="is_full_time" property="isFullTime"/>
+    </resultMap>
+
+    <!-- 根据人才id获取教育经历基本信息 -->
+    <select id="selectUserEducationModelByUserId" resultMap="UserEducationExperienceModel">
+        SELECT `id`, `school_name`, `major`, `start_time`, `end_time`, `school_experience`, `degree`, `is_full_time`
+        FROM `user_education_experience`
+        WHERE `user_id` = #{userId}
+    </select>
+</mapper> 

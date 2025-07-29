@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.caicai.mapper.UserInfoMapper">
+
+    <resultMap id="BaseResultMap" type="com.caicai.entity.pojo.UserInfo">
+            <id property="id" column="id" />
+            <result property="name" column="name" />
+            <result property="gender" column="gender" />
+            <result property="birthday" column="birthday" />
+            <result property="address" column="address" />
+            <result property="userId" column="user_id" />
+            <result property="addressDetail" column="address_detail" />
+            <result property="censusRegister" column="census_register" />
+            <result property="height" column="height" />
+            <result property="marriage" column="marriage" />
+            <result property="nation" column="nation" />
+            <result property="wechat" column="wechat" />
+            <result property="weight" column="weight" />
+            <result property="advantage" column="advantage" />
+            <result property="createdAt" column="created_at" />
+            <result property="deletedAt" column="deleted_at" />
+            <result property="updatedAt" column="updated_at" />
+            <result property="jobStatus" column="job_status" />
+            <result property="edu" column="edu" />
+            <result property="workExp" column="work_exp" />
+            <result property="major" column="major" />
+            <result property="feature" column="feature" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,name,gender,birthday,address,user_id,
+        address_detail,census_register,height,marriage,nation,
+        wechat,weight,advantage,created_at,deleted_at,
+        updated_at,job_status,edu,work_exp,major,
+        feature
+    </sql>
+
+    <!-- AI评分用用户基本信息 -->
+    <resultMap id="UserInfoModel" type="com.caicai.entity.model.resume.UserInfoModel">
+        <id property="id" column="id" />
+        <result property="gender" column="gender" />
+        <result property="birthday" column="birthday" />
+    </resultMap>
+
+    <!-- 根据用户id查询用户基本信息 -->
+    <select id="selectUserInfoModelByUserId" resultMap="UserInfoModel">
+        SELECT `id`, `gender`, `birthday`
+        FROM `user_info`
+        WHERE `user_id` = #{userId}
+    </select>
+</mapper>

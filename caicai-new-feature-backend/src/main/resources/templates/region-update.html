@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>区域信息更新</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #0066cc;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+        }
+        .button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+        .button-warning {
+            background-color: #ff9800;
+        }
+        .button-warning:hover {
+            background-color: #e68a00;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type=number] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+        .result {
+            padding: 10px;
+            margin-top: 15px;
+            border-radius: 4px;
+            display: none;
+        }
+        .success {
+            background-color: #dff0d8;
+            color: #3c763d;
+            border: 1px solid #d6e9c6;
+        }
+        .error {
+            background-color: #f2dede;
+            color: #a94442;
+            border: 1px solid #ebccd1;
+        }
+    </style>
+</head>
+<body>
+    <h1>区域信息更新工具</h1>
+    
+    <div class="card">
+        <h2>批量更新区域信息</h2>
+        <p>点击下面的按钮更新全部post表中的区域信息（根据province_area, area, state_area字段解析）</p>
+        <p>
+            <button id="updateAllBtn" class="button">更新所有记录</button>
+            <button id="updateAllAsyncBtn" class="button button-warning">异步更新所有记录</button>
+        </p>
+        <div id="batchResult" class="result"></div>
+    </div>
+    
+    <div class="card">
+        <h2>更新单条记录</h2>
+        <p>输入post记录ID，更新对应记录的区域信息</p>
+        <div class="form-group">
+            <label for="postId">Post ID:</label>
+            <input type="number" id="postId" placeholder="请输入记录ID">
+            <button id="updateOneBtn" class="button">更新单条记录</button>
+        </div>
+        <div id="singleResult" class="result"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const updateAllBtn = document.getElementById('updateAllBtn');
+            const updateAllAsyncBtn = document.getElementById('updateAllAsyncBtn');
+            const updateOneBtn = document.getElementById('updateOneBtn');
+            const batchResult = document.getElementById('batchResult');
+            const singleResult = document.getElementById('singleResult');
+            const postIdInput = document.getElementById('postId');
+            
+            // 更新所有记录
+            updateAllBtn.addEventListener('click', function() {
+                batchResult.style.display = 'none';
+                batchResult.className = 'result';
+                
+                fetch('/region/update-all')
+                    .then(response => response.json())
+                    .then(data => {
+                        batchResult.textContent = data.message || data.data;
+                        batchResult.classList.add(data.code === 0 ? 'success' : 'error');
+                        batchResult.style.display = 'block';
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        batchResult.textContent = '请求失败: ' + error.message;
+                        batchResult.classList.add('error');
+                        batchResult.style.display = 'block';
+                    });
+            });
+            
+            // 异步更新所有记录
+            updateAllAsyncBtn.addEventListener('click', function() {
+                batchResult.style.display = 'none';
+                batchResult.className = 'result';
+                
+                fetch('/region/update-region-fields-async', {
+                    method: 'POST',
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        batchResult.textContent = data.message || data.data;
+                        batchResult.classList.add(data.code === 0 ? 'success' : 'error');
+                        batchResult.style.display = 'block';
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        batchResult.textContent = '请求失败: ' + error.message;
+                        batchResult.classList.add('error');
+                        batchResult.style.display = 'block';
+                    });
+            });
+            
+            // 更新单条记录
+            updateOneBtn.addEventListener('click', function() {
+                const postId = postIdInput.value.trim();
+                if (!postId) {
+                    singleResult.textContent = '请输入有效的记录ID';
+                    singleResult.className = 'result error';
+                    singleResult.style.display = 'block';
+                    return;
+                }
+                
+                singleResult.style.display = 'none';
+                singleResult.className = 'result';
+                
+                fetch(`/region/update-one?id=${postId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        singleResult.textContent = data.message || data.data;
+                        singleResult.classList.add(data.code === 0 ? 'success' : 'error');
+                        singleResult.style.display = 'block';
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        singleResult.textContent = '请求失败: ' + error.message;
+                        singleResult.classList.add('error');
+                        singleResult.style.display = 'block';
+                    });
+            });
+        });
+    </script>
+</body>
+</html> 

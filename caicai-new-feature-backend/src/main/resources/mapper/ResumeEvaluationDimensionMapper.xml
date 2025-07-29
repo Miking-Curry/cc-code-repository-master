@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.caicai.mapper.ResumeEvaluationDimensionMapper">
+
+    <resultMap id="BaseResultMap" type="com.caicai.entity.pojo.ResumeEvaluationDimension">
+            <id property="id" column="id" />
+            <result property="evaluationId" column="evaluation_id" />
+            <result property="dimension" column="dimension" />
+            <result property="score" column="score" />
+            <result property="level" column="level" />
+            <result property="reason" column="reason" />
+            <result property="createdAt" column="created_at" />
+            <result property="updatedAt" column="updated_at" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,evaluation_id,dimension,score,level,reason,
+        created_at,updated_at
+    </sql>
+</mapper>

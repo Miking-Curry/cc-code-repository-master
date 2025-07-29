@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.caicai.mapper.UserViewJobDetailMapper">
+
+    <resultMap id="BaseResultMap" type="com.caicai.entity.pojo.UserViewJobDetail">
+            <id property="id" column="id" />
+            <result property="userId" column="user_id" />
+            <result property="postId" column="post_id" />
+            <result property="viewTime" column="view_time" />
+            <result property="minSalary" column="min_salary" />
+            <result property="maxSalary" column="max_salary" />
+            <result property="industryCategory" column="industry_category" />
+            <result property="createdAt" column="created_at" />
+    </resultMap>
+
+    <!--suppress SqlDialectInspection -->
+    <sql id="Base_Column_List">
+        id,user_id,post_id,view_time,min_salary,max_salary,
+        industry_category,created_at
+    </sql>
+</mapper>

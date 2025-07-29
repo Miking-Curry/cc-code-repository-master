@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.caicai.mapper.CertificateMapper">
+
+    <!-- 基础映射结果集 -->
+    <resultMap id="BaseResultMap" type="com.caicai.entity.pojo.Certificate">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="certificate_name" property="certificateName"/>
+        <result column="certificate_pic" property="certificatePic"/>
+        <result column="issue_date" property="issueDate"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <result column="deleted_at" property="deletedAt"/>
+        <result column="check_status" property="checkStatus"/>
+    </resultMap>
+    
+    <!-- 基础列名列表 -->
+    <sql id="Base_Column_List">
+        id, user_id, certificate_name, certificate_pic, issue_date, created_at, updated_at, deleted_at, check_status
+    </sql>
+
+    <!-- 证书信息VO映射结果集 -->
+    <resultMap id="CertificateInfoVOMap" type="com.caicai.entity.vo.CertificateInfoVO">
+        <result column="id" property="id"/>
+        <result column="certificate_name" property="certificateName"/>
+        <result column="certificate_pic" property="certificatePic"/>
+    </resultMap>
+
+    <!-- 根据用户ID查询该用户的所有技能证书列表 -->
+    <select id="selectCertificateInfoListByUserId" parameterType="java.lang.Long" resultMap="CertificateInfoVOMap">
+        SELECT certificate_name, certificate_pic
+        FROM certificate
+        WHERE user_id = #{userId}
+        ORDER BY created_at DESC
+    </select>
+
+    <!-- 证书基本信息映射结果集 -->
+    <resultMap id="CertificateModel" type="com.caicai.entity.model.resume.CertificateModel">
+        <id column="id" property="id"/>
+        <result column="certificate_name" property="certificateName"/>
+        <result column="issue_date" property="issueDate"/>
+    </resultMap>
+
+    <!-- 根据用户id查询用户所有证书基本信息 -->
+    <select id="selectCertificateModelListByUserId" resultMap="CertificateModel">
+        SELECT `id`, `certificate_name`, `issue_date`
+        FROM `certificate`
+        WHERE `user_id` = #{userId}
+    </select>
+</mapper> 

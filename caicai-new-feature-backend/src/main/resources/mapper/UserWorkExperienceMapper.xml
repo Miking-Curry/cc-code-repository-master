@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.caicai.mapper.UserWorkExperienceMapper">
+
+    <resultMap id="BaseResultMap" type="com.caicai.entity.pojo.UserWorkExperience">
+            <id property="id" column="id" />
+            <result property="createdAt" column="created_at" />
+            <result property="updatedAt" column="updated_at" />
+            <result property="deletedAt" column="deleted_at" />
+            <result property="companyName" column="company_name" />
+            <result property="industry" column="industry" />
+            <result property="job" column="job" />
+            <result property="jobContent" column="job_content" />
+            <result property="startTime" column="start_time" />
+            <result property="endTime" column="end_time" />
+            <result property="department" column="department" />
+            <result property="isInternship" column="is_internship" />
+            <result property="userId" column="user_id" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,created_at,updated_at,deleted_at,company_name,industry,
+        job,job_content,start_time,end_time,department,
+        is_internship,user_id
+    </sql>
+
+    <!-- AI评分用工作经历基本信息 -->
+    <resultMap id="UserWorkExperienceModel" type="com.caicai.entity.model.resume.UserWorkExperienceModel">
+        <id property="id" column="id" />
+        <result property="companyName" column="company_name" />
+        <result property="industry" column="industry" />
+        <result property="job" column="job" />
+        <result property="jobContent" column="job_content" />
+        <result property="startTime" column="start_time" />
+        <result property="endTime" column="end_time" />
+        <result property="department" column="department" />
+        <result property="isInternship" column="is_internship" />
+    </resultMap>
+
+    <!-- 根据人才id查询所有工作经历基本信息 -->
+    <select id="selectUserWorkExperienceModel" resultMap="UserWorkExperienceModel">
+        SELECT `id`, `company_name`, `industry`, `job`, `job_content`, `start_time`, `end_time`, `department`, `is_internship`
+        FROM `user_work_experience`
+        WHERE `user_id` = #{userId}
+    </select>
+</mapper>

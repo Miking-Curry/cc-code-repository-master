@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.caicai.mapper.PointExchangeRecordMapper">
+
+    <resultMap id="BaseResultMap" type="com.caicai.entity.pojo.PointExchangeRecord">
+            <id property="id" column="id" />
+            <result property="userId" column="user_id" />
+            <result property="itemTitle" column="item_title" />
+            <result property="pointCost" column="point_cost" />
+            <result property="txStatus" column="tx_status" />
+            <result property="processedAt" column="processed_at" />
+            <result property="createdAt" column="created_at" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,user_id,item_title,point_cost,tx_status,processed_at,
+        created_at
+    </sql>
+</mapper>

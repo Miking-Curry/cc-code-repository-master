@@ -1,0 +1,6 @@
+logging:
+  level:
+    com.caicai:
+      mapper: debug
+      service: info
+      controller: info

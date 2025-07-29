@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.caicai.mapper.AwardHonorMapper">
+
+    <resultMap id="BaseResultMap" type="com.caicai.entity.pojo.AwardHonor">
+            <id property="id" column="id" />
+            <result property="awardHonorName" column="award_honor_name" />
+            <result property="awardHonorPic" column="award_honor_pic" />
+            <result property="awardHonorDescription" column="award_honor_description" />
+            <result property="obtainDate" column="obtain_date" />
+            <result property="createdAt" column="created_at" />
+            <result property="updatedAt" column="updated_at" />
+            <result property="deletedAt" column="deleted_at" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,award_honor_name,award_honor_pic,award_honor_description,obtain_date,created_at,
+        updated_at,deleted_at
+    </sql>
+
+    <!-- AI评分用获奖荣誉基本信息 -->
+    <resultMap id="AwardHonorModel" type="com.caicai.entity.model.resume.AwardHonorModel">
+        <id property="id" column="id" />
+        <result property="awardHonorName" column="award_honor_name" />
+        <result property="awardHonorDescription" column="award_honor_description" />
+        <result property="obtainDate" column="obtain_date" />
+    </resultMap>
+
+    <!-- 根据简历id查询所有获奖荣誉基本信息 -->
+    <select id="getAwardHonorModelByResumeId" resultMap="AwardHonorModel">
+        SELECT a.`id`, a.`award_honor_name`, a.`award_honor_description`, a.`obtain_date`
+        FROM `award_honor` a
+        LEFT JOIN `resume_award_honor` rah ON a.`id` = rah.`award_honor_id`
+        WHERE rah.`resume_id` = #{resumeId}
+    </select>
+</mapper>

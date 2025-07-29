@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.caicai.mapper.TaskDefinitionMapper">
+
+    <resultMap id="BaseResultMap" type="com.caicai.entity.pojo.TaskDefinition">
+            <id property="id" column="id" />
+            <result property="title" column="title" />
+            <result property="rewardPoint" column="reward_point" />
+            <result property="taskTypeId" column="task_type_id" />
+            <result property="taskActionTypeId" column="task_action_type_id" />
+            <result property="description" column="description" />
+            <result property="maxCountPerCycle" column="max_count_per_cycle" />
+            <result property="refreshIntervalHours" column="refresh_interval_hours" />
+            <result property="startTime" column="start_time" />
+            <result property="endTime" column="end_time" />
+            <result property="sortOrder" column="sort_order" />
+            <result property="isEnable" column="is_enable" />
+            <result property="createdAt" column="created_at" />
+            <result property="updatedAt" column="updated_at" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,title,reward_point,task_type_id,task_action_type_id,description,max_count_per_cycle,
+        refresh_interval_hours,start_time,end_time,sort_order,is_enable,
+        created_at,updated_at
+    </sql>
+</mapper>

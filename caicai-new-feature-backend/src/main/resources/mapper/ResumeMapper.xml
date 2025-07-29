@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.caicai.mapper.ResumeMapper">
+
+    <resultMap id="BaseResultMap" type="com.caicai.entity.pojo.Resume">
+            <id property="id" column="id" />
+            <result property="userId" column="user_id" />
+            <result property="aiConclusion" column="ai_conclusion" />
+            <result property="createdAt" column="created_at" />
+            <result property="updatedAt" column="updated_at" />
+            <result property="deletedAt" column="deleted_at" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,user_id,ai_conclusion,created_at,updated_at,deleted_at
+    </sql>
+
+    <!-- 根据用户id查询简历id 每个用户仅有一份简历 -->
+    <select id="selectIdByUserId" resultType="long">
+        SELECT `id`
+        FROM `resume`
+        WHERE `user_id` = #{userId}
+    </select>
+
+    <!-- 查询简历基本信息 -->
+    <select id="getResumeByUserId" resultType="com.caicai.entity.pojo.Resume">
+        SELECT *
+        FROM resume
+        WHERE user_id = #{userId}
+        AND deleted_at IS NULL
+        LIMIT 1
+    </select>
+
+    <!-- 查询用户工作经历 -->
+    <select id="getUserWorkExperiencesByUserId" resultType="com.caicai.entity.pojo.UserWorkExperience">
+        SELECT DISTINCT *
+        FROM user_work_experience
+        WHERE user_id = #{userId}
+        AND deleted_at IS NULL
+        ORDER BY start_time DESC
+    </select>
+
+    <!-- 查询用户教育经历 -->
+    <select id="getUserEducationExperiencesByUserId" resultType="com.caicai.entity.pojo.UserEducationExperience">
+        SELECT DISTINCT *
+        FROM user_education_experience
+        WHERE user_id = #{userId}
+        AND deleted_at IS NULL
+        ORDER BY start_time DESC
+    </select>
+
+    <!-- 查询简历关联的项目经验 -->
+    <select id="getProjectExperiencesByUserId" resultType="com.caicai.entity.pojo.UserProjectExperience">
+        SELECT DISTINCT *
+        FROM user_project_experience
+        WHERE user_id = #{userId}
+        ORDER BY start_time DESC
+    </select>
+
+    <!-- 查询简历关联的获奖荣誉 -->
+    <select id="getAwardHonorsByResumeId" resultType="com.caicai.entity.pojo.AwardHonor">
+        SELECT DISTINCT ah.*
+        FROM award_honor ah
+        INNER JOIN resume_award_honor rah ON ah.id = rah.award_honor_id
+        WHERE rah.resume_id = #{resumeId}
+        AND ah.deleted_at IS NULL
+        ORDER BY ah.obtain_date DESC
+    </select>
+
+    <!-- 查询简历关联的技能标签 -->
+    <select id="getSkillTagsByUserId" resultType="com.caicai.entity.pojo.UserSkill">
+        SELECT DISTINCT *
+        FROM user_skill
+        WHERE user_id = #{userId}
+        ORDER BY created_at
+    </select>
+
+    <!-- 用户信息查询 -->
+    <select id="getUserById" resultType="com.caicai.entity.pojo.User">
+        SELECT id, last_login, is_superuser, created_at, updated_at, deleted_at, is_active, is_staff, username, password, created_by_id, company_id, organization_id, avatar_id, email, phone, type, real_password, source, is_user
+        FROM user
+        WHERE id = #{userId}
+    </select>
+
+    <!-- 一次性获取所有简历详情（复杂查询） -->
+    <select id="getResumeDetailByUserId" resultMap="resumeDetailResultMap">
+        SELECT 
+            r.id, r.user_id, r.ai_conclusion, r.created_at, r.updated_at, r.ai_score,
+            u.*,
+            pe.id as pe_id, pe.project_name, pe.project_role, pe.start_time, pe.end_time, pe.project_description as pe_description,
+            ah.id as ah_id, ah.award_honor_name, ah.award_honor_pic, ah.award_honor_description, ah.obtain_date,
+            st.id as st_id, st.skill_name as st_name, st.skill_time as st_time, st.skill_proficiency as st_proficiency,
+            uwe.id as uwe_id, uwe.company_name, uwe.industry, uwe.job, uwe.job_content, uwe.start_time as uwe_start_time, 
+            uwe.end_time as uwe_end_time, uwe.is_internship,
+            uee.id as uee_id, uee.school_name, uee.major, uee.degree, uee.is_full_time, uee.start_time as uee_start_time, 
+            uee.end_time as uee_end_time, uee.school_experience
+        FROM resume r
+        LEFT JOIN user u ON r.user_id = u.id
+        LEFT JOIN user_project_experience upe ON u.id = upe.user_id
+        LEFT JOIN resume_award_honor rah ON r.id = rah.resume_id
+        LEFT JOIN award_honor ah ON rah.award_honor_id = ah.id
+        LEFT JOIN user_skill us ON u.id = us.user_id
+        LEFT JOIN user_work_experience uwe ON r.user_id = uwe.user_id AND uwe.deleted_at IS NULL
+        LEFT JOIN user_education_experience uee ON r.user_id = uee.user_id AND uee.deleted_at IS NULL
+        WHERE r.user_id = #{userId}
+        AND r.deleted_at IS NULL
+    </select>
+
+    <!-- 结果映射 -->
+    <resultMap id="resumeDetailResultMap" type="com.caicai.entity.dto.ResumeDetailDTO">
+        <!-- 简历基本信息 -->
+        <association property="resume" javaType="com.caicai.entity.pojo.Resume">
+            <id column="id" property="id"/>
+            <result column="user_id" property="userId"/>
+            <result column="ai_conclusion" property="aiConclusion"/>
+            <result column="created_at" property="createdAt"/>
+            <result column="updated_at" property="updatedAt"/>
+            <result column="ai_score" property="aiScore"/>
+        </association>
+        
+        <!-- 用户基本信息 -->
+        <association property="user" javaType="com.caicai.entity.pojo.User">
+            <id column="id" property="id"/>
+            <result column="username" property="username"/>
+            <result column="email" property="email"/>
+            <result column="phone" property="phone"/>
+            <result column="avatar_id" property="avatarId"/>
+        </association>
+        
+        <!-- 项目经验列表 -->
+        <collection property="projectExperiences" ofType="com.caicai.entity.pojo.UserProjectExperience">
+            <id column="pe_id" property="id"/>
+            <result column="project_name" property="projectName"/>
+            <result column="role" property="projectRole"/>
+            <result column="start_time" property="startTime"/>
+            <result column="end_time" property="endTime"/>
+            <result column="pe_description" property="projectDescription"/>
+        </collection>
+        
+        <!-- 获奖荣誉列表 -->
+        <collection property="awardHonors" ofType="com.caicai.entity.pojo.AwardHonor">
+            <id column="ah_id" property="id"/>
+            <result column="award_honor_name" property="awardHonorName"/>
+            <result column="award_honor_pic" property="awardHonorPic"/>
+            <result column="award_honor_description" property="awardHonorDescription"/>
+            <result column="obtain_date" property="obtainDate"/>
+        </collection>
+        
+        <!-- 技能标签列表 -->
+        <collection property="skillTags" ofType="com.caicai.entity.pojo.UserSkill">
+            <id column="st_id" property="id"/>
+            <result column="st_name" property="skillName"/>
+            <result column="st_time" property="skillTime"/>
+            <result column="st_proficiency" property="skillProficiency"/>
+        </collection>
+        
+        <!-- 工作经历列表 -->
+        <collection property="userWorkExperiences" ofType="com.caicai.entity.pojo.UserWorkExperience">
+            <id column="uwe_id" property="id"/>
+            <result column="company_name" property="companyName"/>
+            <result column="industry" property="industry"/>
+            <result column="job" property="job"/>
+            <result column="job_content" property="jobContent"/>
+            <result column="uwe_start_time" property="startTime"/>
+            <result column="uwe_end_time" property="endTime"/>
+            <result column="is_internship" property="isInternship"/>
+        </collection>
+        
+        <!-- 教育经历列表 -->
+        <collection property="userEducationExperiences" ofType="com.caicai.entity.pojo.UserEducationExperience">
+            <id column="uee_id" property="id"/>
+            <result column="school_name" property="schoolName"/>
+            <result column="major" property="major"/>
+            <result column="degree" property="degree"/>
+            <result column="is_full_time" property="isFullTime"/>
+            <result column="uee_start_time" property="startTime"/>
+            <result column="uee_end_time" property="endTime"/>
+            <result column="school_experience" property="schoolExperience"/>
+        </collection>
+    </resultMap>
+</mapper> 

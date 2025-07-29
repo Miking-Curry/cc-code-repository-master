@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.caicai.mapper.UserJobIntentionIndustryMapper">
+
+    <resultMap id="BaseResultMap" type="com.caicai.entity.pojo.UserJobIntentionIndustry">
+            <id property="id" column="id" />
+            <result property="createdAt" column="created_at" />
+            <result property="updatedAt" column="updated_at" />
+            <result property="deletedAt" column="deleted_at" />
+            <result property="industry" column="industry" />
+            <result property="jobIntentionId" column="job_intention_id" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,created_at,updated_at,deleted_at,industry,job_intention_id
+    </sql>
+</mapper>

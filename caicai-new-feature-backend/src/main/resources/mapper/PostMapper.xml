@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.caicai.mapper.PostMapper">
+    <!--结果映射 -->
+    <resultMap id="postResultMap" type="com.caicai.entity.pojo.Post">
+        <id property="id" column="id" />
+        <result property="name" column="name" />
+        <result property="desc" column="desc" />
+        <result property="address" column="address" />
+        <result property="minSalary" column="min_salary" />
+        <result property="maxSalary" column="max_salary" />
+        <result property="needNum" column="need_num" />
+        <result property="postType" column="post_type" />
+        <result property="department" column="department" />
+        <result property="status" column="status" />
+        <result property="companyId" column="company_id" />
+        <result property="education" column="education" />
+        <result property="maxExperience" column="max_experience" />
+        <result property="minExperience" column="min_experience" />
+        <result property="city" column="city" />
+        <result property="province" column="province" />
+        <result property="state" column="state" />
+        <result property="view" column="view" />
+        <result property="area" column="area" />
+        <result property="provinceArea" column="province_area" />
+        <result property="stateArea" column="state_area" />
+        <result property="createdAt" column="created_at" />
+        <result property="updatedAt" column="updated_at" />
+        <result property="deletedAt" column="deleted_at" />
+    </resultMap>
+    <resultMap id="companyResultMap" type="com.caicai.entity.pojo.Company">
+        <id property="id" column="id" />
+        <result property="name" column="name" />
+        <result property="organizationId" column="organization_id" />
+        <result property="logoId" column="logo_id" />
+        <result property="address" column="address" />
+        <result property="contact" column="contact" />
+        <result property="email" column="email" />
+        <result property="establishDate" column="establish_date" />
+        <result property="industry" column="industry" />
+        <result property="introduction" column="introduction" />
+        <result property="phone" column="phone" />
+        <result property="staffSize" column="staff_size" />
+        <result property="type" column="type" />
+        <result property="city" column="city" />
+        <result property="province" column="province" />
+        <result property="state" column="state" />
+        <result property="website" column="website" />
+        <result property="area" column="area" />
+        <result property="provinceArea" column="province_area" />
+        <result property="stateArea" column="state_area" />
+        <result property="createdAt" column="created_at" />
+        <result property="updatedAt" column="updated_at" />
+        <result property="deletedAt" column="deleted_at" />
+    </resultMap>
+    
+    <resultMap id="postVOResultMap" type="com.caicai.entity.vo.PostVO">
+        <result property="postId" column="post_id" />
+        <result property="postName" column="post_name" />
+        <result property="minSalary" column="min_salary" />
+        <result property="maxSalary" column="max_salary" />
+        <result property="city" column="city" />
+        <result property="province" column="province" />
+        <result property="state" column="state" />
+        <result property="companyType" column="company_type" />
+        <result property="staffSize" column="staff_size" />
+        <result property="companyName" column="company_name" />
+        <result property="companyLogoUrl" column="company_logo_url" />
+        <result property="createdAt" column="created_at" />
+        <result property="matchPercent" column="match_percent" />
+        <result property="postTag" column="post_tag_list" typeHandler="com.caicai.handler.StringToListTypeHandler" />
+        <result property="postStatusStr" column="post_status_list" />
+    </resultMap>
+    
+    <!-- 根据职位id获取公司详情，先通过职位id找到相应的公司id，再根据公司id找到对应的公司信息 -->
+    <select id="getCompanyDetail" resultMap="companyResultMap">
+        SELECT *
+        FROM company
+        WHERE id = (
+            SELECT company_id
+            FROM post
+            WHERE id = #{postId}
+            AND deleted_at IS NULL
+        )
+        AND deleted_at IS NULL
+    </select>
+
+    <!-- 根据岗位ID获取岗位VO，包含公司信息、岗位状态和匹配度 -->
+    <select id="getPostVOById" resultMap="postVOResultMap">
+        SELECT 
+            p.id AS post_id,
+            p.name AS post_name,
+            p.min_salary,
+            p.max_salary,
+            p.city,
+            p.province,
+            p.state,
+            GROUP_CONCAT(DISTINCT ps.status) AS post_status_list,
+            p.created_at,
+            c.name AS company_name,
+            c.type AS company_type,
+            c.staff_size,
+            CONCAT('http://112.74.33.58:48110/media/logo_', c.logo_id, '_', DATE_FORMAT(c.updated_at, '%Y%m%d%H%i%s'), '.png') AS company_logo_url,
+            MAX(upm.match_percent) AS match_percent,
+            GROUP_CONCAT(DISTINCT pt.name) AS post_tag_list
+        FROM post p
+        LEFT JOIN company c ON p.company_id = c.id
+        LEFT JOIN post_status ps ON p.id = ps.post_id AND ps.deleted_at IS NULL
+        LEFT JOIN user_post_matching upm ON p.id = upm.post_id AND upm.user_id = #{userId}
+        LEFT JOIN post_tag pt ON p.id = pt.post_id AND pt.deleted_at IS NULL
+        WHERE p.id = #{postId}
+        AND p.deleted_at IS NULL
+        GROUP BY p.id, p.name, p.min_salary, p.max_salary, p.city, p.province, p.state, 
+                 p.created_at, c.name, c.type, c.staff_size, company_logo_url
+    </select>
+    
+    <!-- 批量根据岗位ID获取岗位VO列表 -->
+    <select id="getPostVOByIds" resultMap="postVOResultMap">
+        SELECT 
+            p.id AS post_id,
+            p.name AS post_name,
+            p.min_salary,
+            p.max_salary,
+            p.city,
+            p.province,
+            p.state,
+            GROUP_CONCAT(DISTINCT ps.status) AS post_status_list,
+            p.created_at,
+            c.name AS company_name,
+            c.type AS company_type,
+            c.staff_size,
+            CONCAT('http://112.74.33.58:48110/media/logo_', c.logo_id, '_', DATE_FORMAT(c.updated_at, '%Y%m%d%H%i%s'), '.png') AS company_logo_url,
+            MAX(upm.match_percent) AS match_percent,
+            GROUP_CONCAT(DISTINCT pt.name) AS post_tag_list
+        FROM post p
+        LEFT JOIN company c ON p.company_id = c.id
+        LEFT JOIN post_status ps ON p.id = ps.post_id AND ps.deleted_at IS NULL
+        LEFT JOIN user_post_matching upm ON p.id = upm.post_id AND upm.user_id = #{userId}
+        LEFT JOIN post_tag pt ON p.id = pt.post_id AND pt.deleted_at IS NULL
+        WHERE p.id IN
+        <foreach collection="postIds" item="postId" open="(" separator="," close=")">
+            #{postId}
+        </foreach>
+        AND p.deleted_at IS NULL
+        GROUP BY p.id, p.name, p.min_salary, p.max_salary, p.city, p.province, p.state, 
+                 p.created_at, c.name, c.type, c.staff_size, company_logo_url
+    </select>
+</mapper>

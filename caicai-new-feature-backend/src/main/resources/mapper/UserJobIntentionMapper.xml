@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.caicai.mapper.UserJobIntentionMapper">
+
+    <resultMap id="BaseResultMap" type="com.caicai.entity.pojo.UserJobIntention">
+            <id property="id" column="id" />
+            <result property="createdAt" column="created_at" />
+            <result property="updatedAt" column="updated_at" />
+            <result property="deletedAt" column="deleted_at" />
+            <result property="minSalary" column="min_salary" />
+            <result property="maxSalary" column="max_salary" />
+            <result property="city" column="city" />
+            <result property="workType" column="work_type" />
+            <result property="job" column="job" />
+            <result property="userId" column="user_id" />
+            <result property="province" column="province" />
+            <result property="state" column="state" />
+            <result property="area" column="area" />
+            <result property="provinceArea" column="province_area" />
+            <result property="stateArea" column="state_area" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,created_at,updated_at,deleted_at,min_salary,max_salary,
+        city,work_type,job,user_id,province,
+        state,area,province_area,state_area
+    </sql>
+
+    <!-- AI评分用用户求职意向基本信息 -->
+    <resultMap id="UserJobIntentionModel" type="com.caicai.entity.model.resume.UserJobIntentionModel">
+        <id property="id" column="id" />
+        <result property="minSalary" column="min_salary" />
+        <result property="maxSalary" column="max_salary" />
+        <result property="city" column="city" />
+        <result property="job" column="job" />
+        <result property="province" column="province" />
+        <result property="state" column="state" />
+    </resultMap>
+
+    <!-- 根据人才id查询求职意向基本信息 -->
+    <select id="selectUserJobIntentionModel" resultMap="UserJobIntentionModel">
+        SELECT `id`, `job`, `province`, `city`, `state`, `min_salary`, `max_salary`
+        FROM `user_job_intention`
+        WHERE `user_id` = #{userId}
+    </select>
+</mapper>

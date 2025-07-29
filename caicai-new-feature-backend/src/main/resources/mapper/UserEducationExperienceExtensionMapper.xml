@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.caicai.mapper.UserEducationExperienceExtensionMapper">
+
+    <!-- 基础映射结果集 -->
+    <resultMap id="BaseResultMap" type="com.caicai.entity.pojo.UserEducationExperienceExtension">
+        <id column="id" property="id"/>
+        <result column="user_education_experience_id" property="userEducationExperienceId"/>
+        <result column="is_graduated" property="isGraduated"/>
+        <result column="graduation_date" property="graduationDate"/>
+        <result column="certificate_pic" property="certificatePic"/>
+        <result column="check_status" property="checkStatus"/>
+    </resultMap>
+    
+    <!-- 基础列名列表 -->
+    <sql id="Base_Column_List">
+        id, user_education_experience_id, is_graduated, graduation_date, certificate_pic, check_status
+    </sql>
+
+    <!-- 根据教育经历ID查询扩展信息 -->
+    <select id="selectByExperienceId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM user_education_experience_extension
+        WHERE user_education_experience_id = #{experienceId}
+        LIMIT 1
+    </select>
+</mapper> 

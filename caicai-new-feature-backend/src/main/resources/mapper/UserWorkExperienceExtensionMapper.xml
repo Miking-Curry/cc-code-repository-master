@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.caicai.mapper.UserWorkExperienceExtensionMapper">
+
+    <!-- 基础映射结果集 -->
+    <resultMap id="BaseResultMap" type="com.caicai.entity.pojo.UserWorkExperienceExtension">
+        <id column="id" property="id"/>
+        <result column="social_security_record_pic_url" property="socialSecurityRecordPicUrl"/>
+        <result column="Work_years" property="workYears"/>
+        <result column="user_id" property="userId"/>
+        <result column="check_status" property="checkStatus"/>
+    </resultMap>
+    
+    <!-- 基础列名列表 -->
+    <sql id="Base_Column_List">
+        id, social_security_record_pic_url, Work_years, user_id, check_status
+    </sql>
+
+    <!-- 根据用户ID查询工作经历扩展信息 -->
+    <select id="selectByUserId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM user_work_experience_extension
+        WHERE user_id = #{userId}
+        LIMIT 1
+    </select>
+
+</mapper> 

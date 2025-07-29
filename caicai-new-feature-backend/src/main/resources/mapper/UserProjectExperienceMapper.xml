@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.caicai.mapper.UserProjectExperienceMapper">
+
+    <resultMap id="BaseResultMap" type="com.caicai.entity.pojo.UserProjectExperience">
+            <id property="id" column="id" />
+            <result property="createdAt" column="created_at" />
+            <result property="updatedAt" column="updated_at" />
+            <result property="deletedAt" column="deleted_at" />
+            <result property="projectName" column="project_name" />
+            <result property="projectRole" column="project_role" />
+            <result property="projectContent" column="project_content" />
+            <result property="startTime" column="start_time" />
+            <result property="endTime" column="end_time" />
+            <result property="projectResult" column="project_result" />
+            <result property="projectTechnology" column="project_technology" />
+            <result property="projectDescription" column="project_description" />
+            <result property="projectUrl" column="project_url" />
+            <result property="userId" column="user_id" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,created_at,updated_at,deleted_at,project_name,project_role,
+        project_content,start_time,end_time,project_result,project_technology,
+        project_description,project_url,user_id
+    </sql>
+
+    <!-- AI评分用项目经验基本信息 -->
+    <resultMap id="UserProjectExperienceModel" type="com.caicai.entity.model.resume.UserProjectExperienceModel">
+        <id property="id" column="id" />
+        <result property="projectName" column="project_name" />
+        <result property="projectRole" column="project_role" />
+        <result property="projectContent" column="project_content" />
+        <result property="startTime" column="start_time" />
+        <result property="endTime" column="end_time" />
+        <result property="projectResult" column="project_result" />
+        <result property="projectTechnology" column="project_technology" />
+        <result property="projectDescription" column="project_description" />
+    </resultMap>
+
+    <!-- 根据简历id查询所有项目经验基本信息 -->
+    <select id="selectProjectExperienceModelByUserId" resultMap="UserProjectExperienceModel">
+        SELECT `id`, `project_name`, `project_role`, `project_content`, `start_time`, `end_time`, `project_result`, `project_technology`, `project_description`
+        FROM `user_project_experience`
+        WHERE `user_id` = #{userId}
+    </select>
+</mapper>
