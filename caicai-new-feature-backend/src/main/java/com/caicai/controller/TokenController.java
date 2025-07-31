@@ -26,19 +26,19 @@ import java.util.Map;
 public class TokenController {
 
     // 开发环境启用，生产环境请注释 TODO
-    // @GetMapping("/get-token")
-    // public R<Map<String, Object>> getToken(@RequestParam(required = false, defaultValue = "1") Long userId) {
-    //     //生成token令牌
-    //     String token = JwtUtil.getToken(userId);
+     @GetMapping("/get-token")
+     public R<Map<String, Object>> getToken(@RequestParam(required = false, defaultValue = "1") Long userId) {
+         //生成token令牌
+         //String token = JwtUtil.getToken(userId);
+         String token = JwtUtil.generateToken(userId);
+         //封装响应
+         Map<String, Object> tokenData = new HashMap<>();
+         tokenData.put("token", token);
+         tokenData.put("expiresIn", "3600000");
+         tokenData.put("userId", userId);
 
-    //     //封装响应
-    //     Map<String, Object> tokenData = new HashMap<>();
-    //     tokenData.put("token", token);
-    //     tokenData.put("expiresIn", "3600000");
-    //     tokenData.put("userId", userId);
-
-    //     return R.success(tokenData);
-    // }
+         return R.success(tokenData);
+     }
 
     /**
      * @param userId:

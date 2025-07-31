@@ -12,9 +12,12 @@ declare module 'vue' {
     CreditMissionItem: typeof import('./components/credit/CreditMissionItem.vue')['default']
     CreditScore: typeof import('./components/credit/CreditScore.vue')['default']
     Dashboard: typeof import('./components/dashboard/dashboard.vue')['default']
+    ElButton: typeof import('element-plus/es')['ElButton']
     ElDialog: typeof import('element-plus/es')['ElDialog']
     ElIcon: typeof import('element-plus/es')['ElIcon']
     ElInput: typeof import('element-plus/es')['ElInput']
+    ElSkeleton: typeof import('element-plus/es')['ElSkeleton']
+    ElSkeletonItem: typeof import('element-plus/es')['ElSkeletonItem']
     ErrorToast: typeof import('./components/toast/ErrorToast.vue')['default']
     JobItem: typeof import('./components/ai/JobItem.vue')['default']
     MissionItem: typeof import('./components/point/MissionItem.vue')['default']
@@ -26,6 +29,7 @@ declare module 'vue' {
     SuccessToast: typeof import('./components/toast/SuccessToast.vue')['default']
     Uncomplete: typeof import('./components/toast/Uncomplete.vue')['default']
     UnderDevelopDialog: typeof import('./components/toast/UnderDevelopDialog.vue')['default']
+    VanIcon: typeof import('vant/es')['Icon']
     WithdrawDialog: typeof import('./components/point/WithdrawDialog.vue')['default']
   }
 }

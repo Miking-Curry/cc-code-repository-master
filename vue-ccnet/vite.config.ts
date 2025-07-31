@@ -62,8 +62,8 @@ export default defineConfig({
         // 开发环境下切换
         // target: 'http://192.168.2.185:8080', //小潘
         // target: 'http://192.168.2.177:8080', //小杨 
-        // target: 'http://localhost:8080', //本机
-        target: 'http://120.25.120.221:8080', //服务器
+         target: 'http://localhost:8099', //本机
+        //target: 'http://120.25.120.221:8080', //服务器
         changeOrigin: true,
         rewrite: path => path.replace(/^\/api/, '') // 去掉前缀 /api
       }

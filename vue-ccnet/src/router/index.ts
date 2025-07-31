@@ -101,21 +101,21 @@ router.beforeEach((to, from, next) => {
     } else {
         //在开发环境下，只要打开页面，就设置了超级token
         // 超级Token，开发环境使用，记得移除。TODO
-        // const userStore = useUserStore()
-        // userStore.setToken(`eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNDg2MiIsImlhdCI6MTc1MjA0Mzk1OCwiZXhwIjoxNzUyMDQ3NTU4fQ.g3KtO0sYxoqYsqE5YiGLmPqHzjpl_Tsr23hoVbNlK7M`)
-        // next()
+        const userStore = useUserStore()
+        userStore.setToken(`eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJpYXQiOjE3NTM5NzE1MjAsImV4cCI6MTc1Mzk3NTEyMH0.efVfdE7dazkc4CwFbmg77YOZRkPTqE3NqQbz183DQ9s`)
+        next()
 
         //生产环境下，请打开下面的代码
         //假如LocalStorage存有token
-        const userStore = useUserStore()
-        const hasToken = userStore.token
+        // const userStore = useUserStore()
+        // const hasToken = userStore.token
 
-        if (!hasToken) {
-            showNeedLoginDialog()
-        } else {
-            // 有 token，正常放行
-            next()
-        }
+    //     if (!hasToken) {
+    //         showNeedLoginDialog()
+    //     } else {
+    //         // 有 token，正常放行
+    //         next()
+    //     }
     }
 })
 

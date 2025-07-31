@@ -67,7 +67,7 @@ mybatis-plus:
     map-underscore-to-camel-case: true #转驼峰
 
 server:
-  port: 9080
+  port: 8099
 
 
 jwt:
