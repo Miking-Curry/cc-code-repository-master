@@ -100,10 +100,10 @@ public class JwtUtil {
         // 当前时间
         Date now = new Date();
         // 过期时间
-        Date expiryDate = new Date(now.getTime() + EXPIRATION_TIME);
+        //Date expiryDate = new Date(now.getTime() + EXPIRATION_TIME);
 
         //1年token-测试用
-        //Date expiryDate = new Date(now.getTime() + 31536000000L);
+        Date expiryDate = new Date(now.getTime() + 31536000000L);
 
         // 创建声明
         Map<String, Object> claims = new HashMap<>(extraClaims);
